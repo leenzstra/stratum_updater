@@ -9,6 +9,7 @@ on:
 
 jobs:
   test:
+    name: test
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,9 +18,11 @@ jobs:
           channel: 'stable'
       - run: flutter config --enable-windows-desktop
       - run: flutter test
-  build:
+
+  pre-release:
+    name: "pre-release"
+    runs-on: "windows-latest"
     needs: [test]
-    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
@@ -27,11 +30,6 @@ jobs:
           channel: 'stable'
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows --release --target=.\lib\main_dev.dart
-  pre-release:
-    name: "Pre Release"
-    runs-on: "windows-latest"
-    needs: [build]
-    steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
