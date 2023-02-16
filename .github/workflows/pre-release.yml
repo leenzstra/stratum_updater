@@ -3,6 +3,25 @@ name: "Pre release"
 on: [workflow_call]
 
 jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter config --enable-windows-desktop
+      - run: flutter test
+  build:
+    needs: [test]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter config --enable-windows-desktop
+      - run: flutter build windows --release --target=.\lib\main_dev.dart
   pre-release:
     name: "Pre Release"
     runs-on: "windows-latest"
