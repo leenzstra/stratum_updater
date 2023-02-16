@@ -9,24 +9,24 @@ class DownloadRepository {
   );
   final Dio client;
 
-  Future<Either<Failure, String>> getDownloadUrl(SubjectData subject) async {
-    final r = await client.post<Map<String, dynamic>>(
-      'get_download_url',
-      data: {'license_hash': licenseHash, 'machine_info_hash': machineId},
-    );
+  // Future<Either<Failure, String>> getDownloadUrl(SubjectData subject) async {
+  //   final r = await client.post<Map<String, dynamic>>(
+  //     'get_download_url',
+  //     data: {'license_hash': licenseHash, 'machine_info_hash': machineId},
+  //   );
 
-    if (r.statusCode != 200) {
-      return left(const Failure.badRequest());
-    }
-    final data = r.data!;
-    if (data['result'] == false) {
-      return left(
-        Failure.unprocessableEntity(message: data['result'].toString()),
-      );
-    }
+  //   if (r.statusCode != 200) {
+  //     return left(const Failure.badRequest());
+  //   }
+  //   final data = r.data!;
+  //   if (data['result'] == false) {
+  //     return left(
+  //       Failure.unprocessableEntity(message: data['result'].toString()),
+  //     );
+  //   }
 
-    return right(true);
-  }
+  //   return right(true);
+  // }
 
   Future<Either<Failure, bool>> download(
     String url,

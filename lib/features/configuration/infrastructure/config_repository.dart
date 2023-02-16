@@ -19,7 +19,9 @@ class ConfigRepository {
   }
 
   AppConfig getConfig() {
-    return AppConfig(installationPath: store.getString(installPathKey)!);
+    return AppConfig(
+        installationPath:
+            store.getString(installPathKey) ?? defaultInstallPath);
   }
 
   void setInstallPath(String path) {

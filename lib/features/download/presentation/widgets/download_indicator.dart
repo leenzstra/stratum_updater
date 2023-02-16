@@ -37,7 +37,6 @@ class CardDownloadIndicator extends ConsumerWidget {
           onPressed: () {
             c.download(
               'http://212.183.159.230/100MB.zip',
-              '200MB.zip',
               subjectData,
             );
           },

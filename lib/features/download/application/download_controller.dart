@@ -17,9 +17,11 @@ class DownloadController extends StateNotifier<DownloadState> {
   final InstallationLocalDatasource installationLocalDatasource;
 
   Future<void> download(
+    String url,
     SubjectData subjectData,
   ) async {
     final r = await repository.download(
+      url,
       path.join(configRepo.getConfig().installationPath, '${subjectData.alias}_${subjectData.sid}'),
       onReceiveProgress: (cur, total) {
         state = DownloadState.downloading(
