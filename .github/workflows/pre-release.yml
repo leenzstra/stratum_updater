@@ -1,6 +1,11 @@
 name: "Pre release"
 
-on: [workflow_call]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
 
 jobs:
   test:
