@@ -8,31 +8,29 @@ on:
 
 
 jobs:
-  test:
-    name: test
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-      - run: flutter config --enable-windows-desktop
-      - run: flutter test
-
   pre-release:
     name: "pre-release"
     runs-on: "windows-latest"
     needs: [test]
     steps:
       - uses: actions/checkout@v3
+
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
       - run: flutter config --enable-windows-desktop
+
+      - run: flutter test
+
       - run: flutter build windows --release --target=.\lib\main_dev.dart
-      - uses: montudor/action-zip@v1
+
+      - uses: thedoctor0/zip-release@0.7.1
         with:
-          args: zip -qq -r Release.zip .\build\windows\runner\Release
+          type: 'zip'
+          filename: 'Release.zip'
+          path: .\build\windows\runner\Release
+
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
