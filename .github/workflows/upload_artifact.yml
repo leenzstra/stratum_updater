@@ -1,0 +1,34 @@
+name: "Upload artifact"
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
+
+jobs:
+  artifact:
+    name: Upload
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Enable windows
+        run: flutter config --enable-windows-desktop
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build
+        run: flutter build windows --debug --target=.\lib\main_dev.dart
+
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          path: .\build\windows\runner\Debug
