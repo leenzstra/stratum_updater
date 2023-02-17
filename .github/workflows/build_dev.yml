@@ -1,0 +1,54 @@
+name: Build dev
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build:
+    name: Build and upload artifact
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Enable windows
+        run: flutter config --enable-windows-desktop
+
+      - name: Pub get
+        run: dart pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build
+        run: flutter build windows --debug --target=.\lib\main_dev.dart
+
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build ${{ github.run_number }}
+          path: |
+            .\build\windows\runner\Debug
+            .\doc
+  docs:
+    name: Upload docs
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get docs
+        uses: actions/download-artifact@v3
+        with:
+          name: Build ${{ github.run_number }}
+          
+      - name: Display structure of downloaded files
+        run: ls -R

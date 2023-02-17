@@ -1,10 +1,10 @@
-name: "Test, build and release"
+name: Build release
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
 jobs:
   test:
@@ -25,9 +25,10 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  test_and_release:
-    name: "pre-release"
-    runs-on: "windows-latest"
+  release:
+    name: release
+    needs: [test]
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -46,15 +47,15 @@ jobs:
       - name: Make archive
         uses: thedoctor0/zip-release@0.7.1
         with:
-          type: "zip"
-          filename: "Release.zip"
+          type: zip
+          filename: Release.zip
           path: .\build\windows\runner\Release
 
       - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
+          prerelease: false
+          title: Build
           files: Release.zip
