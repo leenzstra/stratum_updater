@@ -31,16 +31,23 @@ jobs:
       - name: Build
         run: flutter build windows --debug --target=.\lib\main_dev.dart
 
-      - name: Upload
+      - name: Generate docs
+        run: dart doc
+
+      - name: Upload build
         uses: actions/upload-artifact@v3
         with:
           name: Build ${{ github.run_number }}
-          path: |
-            .\build\windows\runner\Debug
-            .\doc
+          path: .\build\windows\runner\Debug
+
+      - name: Upload docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: Docs ${{ github.run_number }}
+          path: .\doc
   docs:
     name: Upload docs
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build]
     steps:
       - name: Checkout
@@ -49,7 +56,10 @@ jobs:
       - name: Get docs
         uses: actions/download-artifact@v3
         with:
-          name: Build ${{ github.run_number }}
+          name: Docs ${{ github.run_number }}
           
-      - name: Display
-        run: ls -R
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doc/api
